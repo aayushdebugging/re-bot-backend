@@ -1,99 +1,270 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# ReBot Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Welcome to the **ReBot Backend** project! This is a NestJS-based API that provides modular functionality for authentication, user management, inventory management, and financial operations. The documentation below will help you get started with setting up, running, and testing the project.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Table of Contents
+- [Project Setup](#project-setup)
+- [Folder Structure Overview](#folder-structure-overview)
+- [Environment Configuration](#environment-configuration)
+- [Running the Application](#running-the-application)
+- [API Endpoints](#api-endpoints)
+  - [Auth Module](#auth-module)
+  - [User Module](#user-module)
+  - [Inventory Module](#inventory-module)
+  - [Finance Module](#finance-module)
+- [Using Postman](#using-postman)
+  - [Setup and Import Requests](#setup-and-import-requests)
+  - [Testing Authentication](#testing-authentication)
+  - [Testing Inventory CRUD Operations](#testing-inventory-crud-operations)
+- [Summary](#summary)
 
-## Description
+## 1. Project Setup
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### Prerequisites
+Before setting up the project, make sure you have the following:
+- **Node.js** (v14.x or later)
+- **MongoDB** (running locally or accessible via a network)
+- **Postman** (for testing the API)
 
-## Project setup
+### Steps to Set Up the Project
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd re-bot-backend
+   ```
 
-```bash
-$ npm install
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+## 2. Folder Structure Overview
+
+The project follows the modular structure of NestJS, with the following folder organization:
+
+```
+src/
+├── address/
+│   ├── address.controller.ts
+│   ├── address.dto.ts
+│   ├── address.module.ts
+│   ├── address.schema.ts
+│   └── address.service.ts
+├── auth/
+│   ├── auth.controller.ts
+│   ├── auth.guard.ts
+│   ├── auth.module.ts
+│   ├── auth.service.ts
+│   ├── jwt.strategy.ts
+│   ├── roles.decorator.ts
+│   └── roles.guard.ts
+├── finance/
+│   ├── finance.controller.ts
+│   ├── finance.dto.ts
+│   ├── finance.module.ts
+│   ├── finance.service.ts
+│   ├── installment.schema.ts
+│   └── payment-plan.schema.ts
+├── inventory/
+│   ├── inventory.controller.ts
+│   ├── inventory.dto.ts
+│   ├── inventory.module.ts
+│   ├── inventory.schema.ts
+│   └── inventory.service.ts
+├── user/
+│   ├── user.controller.ts
+│   ├── user.dto.ts
+│   ├── user.module.ts
+│   ├── user.schema.ts
+│   └── user.service.ts
+└── app.module.ts
 ```
 
-## Compile and run the project
+## 3. Environment Configuration
+
+Create an `.env` file in the project root with the following content:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+# Environment Variables
+MONGODB_URI=mongodb://localhost:27017/rebot-backend
+JWT_SECRET=your_jwt_secret_key
+JWT_EXPIRATION=1h
 ```
 
-## Run tests
+## 4. Running the Application
+
+### Development Mode
+
+To run the application in development mode, use:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run start:dev
 ```
 
-## Deployment
+### Production Mode
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+To build and run the application in production mode, use:
 
 ```bash
-$ npm install -g mau
-$ mau deploy
+npm run build
+npm run start:prod
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+The server will be running at `http://localhost:3000`.
 
-## Resources
+## 5. API Endpoints
 
-Check out a few resources that may come in handy when working with NestJS:
+### 1. Auth Module
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+- **Register a User:**
+  - **[POST]** `/auth/register`
+  - Request Body:
+    ```json
+    {
+      "username": "agency1",
+      "password": "password123",
+      "role": "AGENCY"
+    }
+    ```
+  - Response: User registration success message.
 
-## Support
+- **Login a User:**
+  - **[POST]** `/auth/login`
+  - Request Body:
+    ```json
+    {
+      "username": "agency1",
+      "password": "password123"
+    }
+    ```
+  - Response:
+    ```json
+    {
+      "access_token": "JWT_TOKEN_HERE"
+    }
+    ```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### 2. User Module
 
-## Stay in touch
+- **Get User by Username:**
+  - **[GET]** `/user/:username`
+  - Response: User details in JSON format.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### 3. Inventory Module
 
-## License
+- **Create Inventory (Agency Only):**
+  - **[POST]** `/inventory`
+  - Headers:
+    ```bash
+    Authorization: Bearer <JWT_TOKEN_HERE>
+    ```
+  - Request Body:
+    ```json
+    {
+      "type": "R",
+      "subType": "Flat",
+      "saleType": "off-plan",
+      "project": "ObjectId_of_Project",
+      "address": "ObjectId_of_Address",
+      "paymentPlan": "ObjectId_of_PaymentPlan",
+      "metadata": { "key": "value" },
+      "dimension": "ObjectId_of_Dimension"
+    }
+    ```
+  - Response: Created inventory details.
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- **Get All Inventories with Filters:**
+  - **[GET]** `/inventory`
+  - Query Parameters (optional): `type`, `subType`, `locality`, `saleType`, `bhk`, `minPrice`, `maxPrice`.
+  - Response: List of matching inventories.
+
+- **Get Inventory by ID:**
+  - **[GET]** `/inventory/:id`
+  - Response: Inventory details in JSON format.
+
+- **Update Inventory (Agency Only):**
+  - **[PUT]** `/inventory/:id`
+  - Headers:
+    ```bash
+    Authorization: Bearer <JWT_TOKEN_HERE>
+    ```
+  - Request Body: Same as creating inventory.
+  - Response: Updated inventory details.
+
+- **Delete Inventory (Agency Only):**
+  - **[DELETE]** `/inventory/:id`
+  - Headers:
+    ```bash
+    Authorization: Bearer <JWT_TOKEN_HERE>
+    ```
+  - Response: Deletion success message.
+
+### 4. Finance Module
+
+- **Create Payment Plan:**
+  - **[POST]** `/finance/payment-plan`
+  - Request Body:
+    ```json
+    {
+      "totalAmountRent": 2000,
+      "totalAmountBuy": 100000,
+      "paymentCriteria": "Installment"
+    }
+    ```
+  - Response: Created payment plan details.
+
+- **Create Installment:**
+  - **[POST]** `/finance/installment`
+  - Request Body:
+    ```json
+    {
+      "percentage": "10%",
+      "time": "6 months",
+      "description": "Initial installment",
+      "paymentPlan": "ObjectId_of_PaymentPlan"
+    }
+    ```
+  - Response: Created installment details.
+
+## 6. Using Postman
+
+### Setup and Import Requests
+
+1. Create a new collection in Postman and name it `ReBot Backend`.
+2. Set the base URL: `http://localhost:3000`.
+3. Create separate folders in the collection for each module (e.g., Auth, User, Inventory, Finance).
+4. Add new requests for each endpoint as described in the API Endpoints section.
+
+### Testing Authentication
+
+- **Register a User:**
+  - Method: **POST** `/auth/register`
+  - Request Body: Add user details in JSON format.
+  
+- **Login a User:**
+  - Method: **POST** `/auth/login`
+  - Request Body: Add login credentials in JSON format.
+  - Copy the JWT token from the response.
+
+### Testing Inventory CRUD Operations
+
+- **Create Inventory:**
+  - Method: **POST** `/inventory`
+  - Add the JWT token to the Authorization header:
+    ```bash
+    Authorization: Bearer <JWT_TOKEN>
+    ```
+  - Add inventory details in the request body.
+
+- **Get All Inventories:**
+  - Method: **GET** `/inventory`
+  - Add optional query parameters for filtering.
+
+- **Update/Delete Inventory:**
+  - Use the **PUT** or **DELETE** method with the inventory ID and JWT token in the Authorization header.
+
+## Summary
+
+This documentation provides a comprehensive overview of how to set up, run, and test the NestJS backend using Postman. Use the provided API endpoints to perform authentication, CRUD operations, and manage inventory and financial operations.
+
+Let me know if you need further details or assistance!
