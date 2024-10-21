@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Inventory } from './inventory.schema';
@@ -9,7 +9,7 @@ import { ConfigService } from '@nestjs/config';
 export class InventoryService {
   constructor(
     @InjectModel(Inventory.name) private readonly inventoryModel: Model<Inventory>,
-    private readonly configService: ConfigService,  // Access to environment variables
+    private readonly configService: ConfigService,
   ) {}
 
   // Create a new inventory record
@@ -28,11 +28,12 @@ export class InventoryService {
     if (filters.locality) query['address.locality'] = { $regex: filters.locality, $options: 'i' };
     if (filters.saleType) query.saleType = filters.saleType;
     if (filters.bhk) query['dimension.bhk'] = filters.bhk;
-    if (filters.minPrice && filters.maxPrice) {
-      query['paymentPlan.totalAmountBuy'] = {
-        $gte: Number(filters.minPrice),
-        $lte: Number(filters.maxPrice),
-      };
+    
+    // Price range filter
+    if (filters.minPrice || filters.maxPrice) {
+      query['paymentPlan.totalAmountBuy'] = {};
+      if (filters.minPrice) query['paymentPlan.totalAmountBuy'].$gte = Number(filters.minPrice);
+      if (filters.maxPrice) query['paymentPlan.totalAmountBuy'].$lte = Number(filters.maxPrice);
     }
 
     return this.inventoryModel
@@ -46,6 +47,10 @@ export class InventoryService {
 
   // Get an inventory record by ID
   async getInventoryById(id: string): Promise<Inventory> {
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      throw new BadRequestException('Invalid ID format');
+    }
+    
     const inventory = await this.inventoryModel
       .findById(id)
       .populate('address')
@@ -63,6 +68,10 @@ export class InventoryService {
 
   // Update an existing inventory record by ID
   async updateInventory(id: string, data: InventoryDto): Promise<Inventory> {
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      throw new BadRequestException('Invalid ID format');
+    }
+    
     const updatedInventory = await this.inventoryModel
       .findByIdAndUpdate(id, data, { new: true })
       .exec();
@@ -76,6 +85,10 @@ export class InventoryService {
 
   // Delete an inventory record by ID
   async deleteInventory(id: string): Promise<Inventory> {
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      throw new BadRequestException('Invalid ID format');
+    }
+    
     const deletedInventory = await this.inventoryModel.findByIdAndDelete(id).exec();
 
     if (!deletedInventory) {
@@ -85,7 +98,7 @@ export class InventoryService {
     return deletedInventory;
   }
 
-  // Helper method to get the MongoDB URI from environment variables (for demonstration)
+  // Helper method to get the MongoDB URI from environment variables
   getDatabaseURI(): string {
     return this.configService.get<string>('MONGODB_URI');
   }
