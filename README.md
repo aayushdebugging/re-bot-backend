@@ -267,4 +267,3 @@ The server will be running at `http://localhost:3000`.
 
 This documentation provides a comprehensive overview of how to set up, run, and test the NestJS backend using Postman. Use the provided API endpoints to perform authentication, CRUD operations, and manage inventory and financial operations.
 
-Let me know if you need further details or assistance!
